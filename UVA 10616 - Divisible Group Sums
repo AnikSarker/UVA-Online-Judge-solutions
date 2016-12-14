@@ -1,0 +1,37 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+ll dp[205][12][20];
+bool vis[205][12][20];
+int ara[205];
+int D;
+int n;
+
+ll solve(int pos,int left,ll ModSoFar){
+    if(vis[pos][left][ModSoFar]==1) return dp[pos][left][ModSoFar];
+    if(pos==n){
+        if(left==0 && ModSoFar==0) return 1;
+        else return 0;
+    }
+
+    vis[pos][left][ModSoFar]=1;
+    ll val=0;
+    if(left) val+=solve(pos+1,left-1,(ModSoFar+D+ara[pos]%D)%D);
+    val+=solve(pos+1,left,ModSoFar);
+    return dp[pos][left][ModSoFar]=val;
+}
+
+int main(){
+    for(int cs=1;;cs++){
+        int q,m;
+        scanf("%d %d",&n,&q);
+        if(n==0 && q==0) break;
+        for(int i=0;i<n;i++) scanf("%d",&ara[i]);
+        printf("SET %d:\n",cs);
+        for(int i=1;i<=q;i++){
+            scanf("%d %d",&D,&m);
+            memset(vis,0,sizeof(vis));
+            printf("QUERY %d: %lld\n",i,solve(0,m,0));
+        }
+    }
+}
