@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define pii pair<int,int>
+#define mp make_pair
+#define pb push_back
+#define INF 1e8
+#define MAX 10005
+
+vector<int>coin;
+ll dp[MAX];
+int main(){
+    for(int i=1;i<=21;i++) coin.pb(i*i*i);
+    dp[0]=1;
+    for(int j=0;j<coin.size();j++){
+        for(int i=1;i<MAX;i++){
+            if(i>=coin[j]) dp[i]+=dp[i-coin[j]];
+        }
+    }
+
+    int n;
+    while(scanf("%d",&n)==1) printf("%lld\n",dp[n]);
+}
