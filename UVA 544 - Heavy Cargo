@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 205
+#define INF 1e9
+#define pii pair<int,int>
+#define mp make_pair
+#define WHITE 0
+#define GREY 1
+#define BLACK 2
+
+int w;
+string a,b;
+int vis[MAX];
+int dp[MAX];
+string source,dest;
+map<string,int>MAP;
+vector<pii>adj[MAX];
+
+int dfs(int u){
+    if(MAP[dest]==u) return INF;
+    vis[u]=GREY;
+
+    int ans=0;
+    for(int i=0;i<adj[u].size();i++){
+        int v=adj[u][i].first;
+        int cost=adj[u][i].second;
+
+        if(vis[v]==GREY) continue;
+        if(vis[v]==WHITE) dfs(v);
+        ans=max(ans,min(cost,dp[v]));
+    }
+    vis[u]=BLACK;
+    return dp[u]=ans;
+}
+
+int main(){
+    int n,r;
+    int Case=0;
+    while(1){
+        scanf("%d %d",&n,&r);
+        if(n==0 && r==0) break;
+
+        MAP.clear();
+        for(int i=1;i<=n;i++) adj[i].clear();
+        for(int i=1;i<=n;i++) dp[i]=INF;
+        memset(vis,WHITE,sizeof(vis));
+
+        int cnt=0;
+        for(int i=1;i<=r;i++){
+            cin>>a>>b>>w;
+            if(MAP[a]==0) MAP[a]=++cnt;
+            if(MAP[b]==0) MAP[b]=++cnt;
+
+            int ID1=MAP[a];
+            int ID2=MAP[b];
+            adj[ID1].push_back(mp(ID2,w));
+            adj[ID2].push_back(mp(ID1,w));
+        }
+        cin>>source>>dest;
+        printf("Scenario #%d\n",++Case);
+        printf("%d tons\n",dfs(MAP[source]));
+        printf("\n");
+    }
+}
