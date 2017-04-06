@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 105
+
+int A[MAX];
+int B[MAX];
+int N1,N2;
+bool vis[MAX][MAX];
+int dp[MAX][MAX];
+
+int lcs(int i,int j){
+    if(!i || !j) return 0;
+    if(vis[i][j]) return dp[i][j];
+
+    vis[i][j]=1;
+    if(A[i]==B[j]) return dp[i][j]=1+lcs(i-1,j-1);
+    else return dp[i][j]=max(lcs(i-1,j),lcs(i,j-1));
+}
+
+
+int main(){
+    int cs=0;
+    while(scanf("%d %d",&N1,&N2) && N1 && N2){
+        for(int i=1;i<=N1;i++) scanf("%d",&A[i]);
+        for(int i=1;i<=N2;i++) scanf("%d",&B[i]);
+        memset(vis,0,sizeof(vis));
+        printf("Twin Towers #%d\nNumber of Tiles : %d\n\n",++cs,lcs(N1,N2));
+    }
+}
