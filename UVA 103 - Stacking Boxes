@@ -1,0 +1,72 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define MAX 35
+int n,p,x;
+
+struct my{
+    int ID;
+    int V[15];
+    void SORT(){
+        sort(V,V+p);
+    }
+};
+
+
+my A[MAX];
+
+int par[MAX];
+int LIS[MAX];
+int Size;
+
+void print(int i){
+    if(par[i]==i) printf("%d",A[i].ID);
+    else {print(par[i]); printf(" %d",A[i].ID);}
+}
+
+bool cmp(my A,my B){
+    for(int i=0;i<p;i++){
+        if(A.V[i]>B.V[i]) return 0;
+        if(A.V[i]<B.V[i]) return 1;
+    }
+    return 1;
+}
+
+int main(){
+    while(scanf("%d %d",&n,&p)==2){
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<p;j++){
+                scanf("%d",&A[i].V[j]);
+            }
+            A[i].SORT();
+            A[i].ID=i+1;
+        }
+
+        sort(A,A+n,cmp);
+
+        for(int i=0;i<n;i++){
+            LIS[i]=1;
+            par[i]=i;
+            for(int j=0;j<i;j++){
+                bool found=1;
+                for(int k=0;k<p;k++){
+                    if(A[j].V[k]>=A[i].V[k]) found=0;
+                }
+                if(found==1 && LIS[i]<1+LIS[j]){
+                    LIS[i]=1+LIS[j];
+                    par[i]=j;
+                }
+            }
+        }
+
+        int mx=0;
+        int MXindx=-1;
+        for(int i=0;i<n;i++){
+            if(mx<LIS[i]) {mx=LIS[i]; MXindx=i;}
+        }
+
+        printf("%d\n",mx);
+        print(MXindx);
+        printf("\n");
+    }
+}
