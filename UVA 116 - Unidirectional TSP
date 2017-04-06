@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+ll dp[15][105];
+int par[15][105];
+int n,m;
+
+void print(int i,int j){
+    if(j==m) printf("%d",i);
+    else {printf("%d ",i); print(par[i][j],j+1); }
+}
+
+int main(){
+    while(scanf("%d %d",&n,&m)==2){
+        memset(dp,0,sizeof(dp));
+        memset(par,0,sizeof(par));
+
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+                scanf("%lld",&dp[i][j]);
+            }
+        }
+
+        for(int j=m;j>=1;j--){
+            for(int i=1;i<=n;i++){
+                ll MIN=LLONG_MAX;
+                par[i][j]=n;
+
+                if(MIN>dp[i%n+1][j+1]) {MIN=dp[(i%n)+1][j+1]; par[i][j]=(i%n)+1;}
+                if(MIN>dp[i][j+1]) {MIN=dp[i][j+1]; par[i][j]=i;}
+                if(MIN>dp[(i+n-2)%n+1][j+1]) {MIN=dp[(i+n-2)%n+1][j+1]; par[i][j]=(i+n-2)%n+1;}
+
+                if(MIN==dp[(i%n)+1][j+1]) par[i][j]=min(par[i][j],(i%n)+1);
+                if(MIN==dp[i][j+1]) par[i][j]=min(par[i][j],i);
+                if(MIN==dp[(i+n-2)%n+1][j+1]) par[i][j]=min(par[i][j],(i+n-2)%n+1);
+
+                dp[i][j]+=MIN;
+            }
+        }
+        ll MIN=LLONG_MAX;
+        int MINindx=0;
+        for(int i=1;i<=n;i++){
+            if(MIN>dp[i][1]) {MIN=dp[i][1]; MINindx=i;}
+        }
+
+        print(MINindx,1);
+        printf("\n%lld\n",MIN);
+    }
+}
