@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 11
+#define ll long long int
+int D[MAX];
+ll dp[MAX][MAX];
+bool vis[MAX][MAX];
+int par[MAX][MAX];
+int n;
+
+ll solve(int i,int j){
+    if(i==j) return 0;
+    if(vis[i][j]==1) return dp[i][j];
+
+    vis[i][j]=1;
+    ll MIN=LLONG_MAX;
+    for(int k=i;k<j;k++){
+        ll ret=solve(i,k)+solve(k+1,j)+D[i-1]*D[k]*D[j];
+        if(MIN>ret){
+            MIN=ret;
+            par[i][j]=k;
+        }
+    }
+    return dp[i][j]=MIN;
+}
+
+void print(int i,int j){
+    if(i==j) printf("A%d",i);
+    else{
+        printf("(");
+        print(i,par[i][j]);
+        printf(" x ");
+        print(par[i][j]+1,j);
+        printf(")");
+    }
+}
+
+
+int main(){
+    int cs=0;
+    while(scanf("%d",&n)==1){
+        if(n==0) break;
+        for(int i=1;i<=n;i++) scanf("%d %d",&D[i-1],&D[i]);
+        memset(vis,0,sizeof(vis));
+        solve(1,n);
+        printf("Case %d: ",++cs);
+        print(1,n);
+        printf("\n");
+    }
+}
