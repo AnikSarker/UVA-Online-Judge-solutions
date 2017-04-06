@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 30005
+#define ll long long int
+int coin[11]={5,10,20,50,100,200,500,1000,2000,5000,10000};
+ll dp[MAX];
+
+int main(){
+    int n;
+    double p;
+    dp[0]=1;
+    for(int j=0;j<11;j++){
+        for(int i=1;i<MAX;i++){
+            if(i>=coin[j]) dp[i]+=dp[i-coin[j]];
+        }
+    }
+    while(scanf("%lf",&p)==1){
+        p=100*(p+0.0001);
+        n=(int)p;
+        if(n==0) break;
+        printf("%6.2lf%17lld\n",p/100,dp[n]);
+    }
+}
