@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 25
+
+int MAP[MAX];
+int GAP[MAX];
+int ara[MAX];
+int LIS[MAX];
+int Size=0;
+bool input=0;
+int now;
+string s;
+int n,p;
+bool vis[MAX][MAX];
+int dp[MAX][MAX];
+
+int lcs(int i,int j){
+    if(!i || !j) return 0;
+    if(vis[i][j]) return dp[i][j];
+
+    vis[i][j]=1;
+    if(MAP[i]==GAP[j]) return dp[i][j]=1+lcs(i-1,j-1);
+    else return dp[i][j]=max(lcs(i-1,j),lcs(i,j-1));
+}
+
+
+int main(){
+    while(getline(cin,s)){
+
+        Size=0;
+        now=0;
+        for(int i=0;;i++){
+            if(s[i]==' ') { if(now) ara[++Size]=now; now=0;}
+            else if(!s[i]) {ara[++Size]=now; now=0; break;}
+            else now=now*10+s[i]-'0';
+        }
+
+        if(input==1){
+            for(int i=1;i<=n;i++) MAP[ara[i]]=i;
+            input=0;
+        }
+        else if(Size==1) {n=ara[Size]; input=1;}
+        else{
+            for(int i=1;i<=n;i++) GAP[ara[i]]=i;
+            memset(vis,0,sizeof(vis));
+            printf("%d\n",lcs(n,n));
+        }
+    }
+}
