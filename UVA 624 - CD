@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 20
+#define ll long long int
+#define INF 1e12
+int Set(int N,int pos){return N=N | (1<<pos);}
+int reset(int N,int pos){return N= N & ~(1<<pos);}
+bool check(int N,int pos){return (bool)(N & (1<<pos));}
+
+bool vis[(1<<MAX)+7];
+int val[MAX];
+int n;
+int Size;
+
+ll mx;
+int MAXpattern;
+
+void solve(int mask){
+    if(mask==0) return;
+    if(vis[mask]) return;
+
+    vis[mask]=1;
+    ll used=0;
+    for(int i=0;i<n;i++) if(check(mask,i)) used+=val[i];
+
+    if(used<=Size){
+        if(used>mx){mx=used; MAXpattern=mask;}
+    }
+    else{
+        ll ret=-INF;
+        for(int i=0;i<n;i++){
+            if(check(mask,i)==0) continue;
+            solve(reset(mask,i));
+        }
+    }
+}
+
+int main(){
+    while(scanf("%d",&Size)==1){
+        scanf("%d",&n);
+        mx=0;
+        MAXpattern=0;
+        memset(vis,0,sizeof(vis));
+        for(int i=0;i<n;i++) scanf("%d",&val[i]);
+        solve((1<<n)-1);
+        for(int i=0;i<n;i++){
+            if(check(MAXpattern,i)==1) printf("%d ",val[i]);
+        }
+        printf("sum:%d\n",mx);
+
+    }
+}
