@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define MAX 1005
+#define pii pair<int,int>
+#define piii pair<pii,int>
+#define mp make_pair
+#define f first
+#define s second
+piii A[MAX];
+int par[MAX];
+int LIS[MAX];
+int a,b;
+int Size;
+
+void print(int i){
+    if(par[i]==i) printf("%d\n",A[i].s);
+    else {print(par[i]); printf("%d\n",A[i].s);}
+}
+
+int main(){
+    while(scanf("%d %d",&a,&b)==2){
+        A[Size]=mp(mp(a,-b),Size+1);
+        Size++;
+    }
+
+    sort(A,A+Size);
+
+
+    for(int i=0;i<Size;i++){
+        LIS[i]=1;
+        par[i]=i;
+        for(int j=0;j<i;j++){
+            if(A[i].f.f>A[j].f.f && A[i].f.s>A[j].f.s){
+                if(LIS[i]<1+LIS[j]){
+                    LIS[i]=1+LIS[j];
+                    par[i]=j;
+                }
+            }
+        }
+    }
+
+    int mx=0;
+    int MXindx=-1;
+    for(int i=1;i<=Size;i++){
+        if(mx<LIS[i]) {mx=LIS[i]; MXindx=i;}
+    }
+
+    printf("%d\n",mx);
+    print(MXindx);
+}
