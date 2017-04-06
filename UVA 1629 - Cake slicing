@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define MAX 21
+int G[MAX][MAX];
+int C[MAX][MAX];
+int dp[MAX][MAX][MAX][MAX];
+bool vis[MAX][MAX][MAX][MAX];
+
+int SUM(int x1,int y1,int x2,int y2){
+    return C[x2][y2]-C[x1][y2]-C[x2][y1]+C[x1][y1];
+}
+
+
+int solve(int x1,int y1,int x2,int y2){
+    if(SUM(x1,y1,x2,y2)==1) return 0;
+    if(vis[x1][y1][x2][y2]==1) return dp[x1][y1][x2][y2];
+
+    vis[x1][y1][x2][y2]=1;
+    int ret=100000000;
+    for(int i=x1+1;i<=x2-1;i++){
+        ret=min(ret,y2-y1+solve(x1,y1,i,y2)+solve(i,y1,x2,y2));
+    }
+
+    for(int i=y1+1;i<=y2-1;i++){
+        ret=min(ret,x2-x1+solve(x1,y1,x2,i)+solve(x1,i,x2,y2));
+    }
+    return dp[x1][y1][x2][y2]=ret;
+}
+
+int main(){
+    int n,m,k,a,b;
+    int cs=0;
+    while(scanf("%d %d %d",&n,&m,&k)==3){
+        memset(vis,0,sizeof(vis));
+        memset(G,0,sizeof(G));
+
+        for(int i=1;i<=k;i++){
+            scanf("%d %d",&a,&b);
+            G[b][a]=1;
+        }
+
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                C[i][j]=C[i][j-1]+C[i-1][j]-C[i-1][j-1]+G[i][j];
+            }
+        }
+        printf("Case %d: %d\n",++cs,solve(0,0,m,n));
+    }
+}
