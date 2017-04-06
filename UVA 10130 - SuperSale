@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define max_N 1005
+#define max_W 35
+int W[max_N];
+int P[max_N];
+int dp[max_N+1][max_W+1];
+int n,p,x,ans;
+
+
+void Knapsack(int n,int bag){
+    for(int i=1;i<=n;i++) dp[i][0]=0;
+    for(int w=1;w<=bag;w++) dp[0][w]=0;
+
+    for(int i=1;i<=n;i++){
+        for(int w=1;w<=bag;w++){
+            if(W[i]>w) dp[i][w]=dp[i-1][w];
+            else dp[i][w]=max(dp[i-1][w], P[i]+dp[i-1][w-W[i]]);
+        }
+    }
+}
+
+int main(){
+    int t;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d",&n);
+
+        int mx=0;
+        ans=0;
+        for(int i=1;i<=n;i++) scanf("%d %d",&P[i],&W[i]);
+        Knapsack(n,max_W-1);
+
+        scanf("%d",&p);
+        for(int i=1;i<=p;i++){
+            scanf("%d",&x);
+            ans+=dp[n][x];
+        }
+        printf("%d\n",ans);
+    }
+}
