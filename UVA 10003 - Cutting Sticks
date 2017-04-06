@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 1005
+#define ll long long int
+ll dp[MAX][MAX];
+bool vis[MAX][MAX];
+ll ara[MAX];
+int len,n;
+
+ll solve(int L,int R){
+    ll ret=LLONG_MAX;
+    if(vis[L][R]==1) return dp[L][R];
+
+    vis[L][R]=1;
+    int cnt=0;
+    for(int i=1;i<=n;i++){
+        if(ara[i]<=L) continue;
+        if(ara[i]>=R) continue;
+        ret=min(ret,R-L+solve(L,ara[i])+solve(ara[i],R));
+        cnt++;
+    }
+    if(cnt==0) ret=0;
+    return dp[L][R]=ret;
+}
+
+int main(){
+    while(scanf("%d",&len)==1 && len){
+        scanf("%d",&n);
+        for(int i=1;i<=n;i++) scanf("%lld",&ara[i]);
+        memset(vis,0,sizeof(vis));
+        printf("The minimum cutting is %lld.\n",solve(0,len));
+    }
+
+
+}
