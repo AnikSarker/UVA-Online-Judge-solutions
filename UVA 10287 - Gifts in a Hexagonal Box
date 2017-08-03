@@ -1,0 +1,15 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    double S;
+    double PI=acos(-1);
+
+    while(scanf("%lf",&S)==1){
+        double r1=sqrt(3)/2*S;
+        double r2=S/(1+1/cos(PI/6));
+        double r3=sqrt(3)/4*S;
+        double r4=-(28.0/sqrt(3)-sqrt(28.0*28/3.0+4*20/3.0*7))/(2*20/3.0)*S;
+        printf("%.10lf %.10lf %.10lf %.10lf\n",r1,r2,r3,r4);
+    }
+}
