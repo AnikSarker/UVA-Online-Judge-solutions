@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    double R,N;
+    double PI=acos(-1);
+    while(scanf("%lf %lf",&R,&N)==2){
+        double ang=2*PI/N;
+        double ANG=(PI-ang)/2;
+        double r=R/(1+1/cos(ANG));
+
+        double h=sqrt((R-r)*(R-r)-r*r);
+        double triArea=0.5*(2*r)*h;
+        double polyArea=N*triArea;
+        double I=polyArea-N*0.5*r*r*(2*ANG);
+
+        double E=PI*R*R-I-N*PI*r*r;
+
+        if(N==1) {r=R; I=E=0;}
+        printf("%.10lf %.10lf %.10lf\n",r,I,E);
+    }
+}
