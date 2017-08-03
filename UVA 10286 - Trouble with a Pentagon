@@ -1,0 +1,11 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    double F;
+    double PI=acos(-1);
+    while(scanf("%lf",&F)==1){
+        double a=sin(108.0/180*PI)/sin(63.0/180*PI)*F;
+        printf("%.10lf\n",a);
+    }
+}
