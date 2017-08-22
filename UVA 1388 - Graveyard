@@ -1,0 +1,26 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+set<double>SET;
+set<double>:: iterator it;
+int N,M;
+double now;
+double n,p;
+
+int main(){
+    while(scanf("%d %d",&N,&M)==2){
+        SET.clear();
+        SET.insert(-1000);
+        double sum=0;
+        for(int i=1;i<N+M;i++) SET.insert(360.0*i/(N+M));
+        for(int i=1;i<N;i++){
+            now=360.0*i/N;
+            it=SET.lower_bound(now);
+            n=*it;
+            p=*--it;
+            if(now-p<=n-now) {sum+=(now-p); SET.erase(it);}
+            else {sum+=(n-now); SET.erase(++it);}
+        }
+        printf("%lf\n",sum*10000/360);
+    }
+}
