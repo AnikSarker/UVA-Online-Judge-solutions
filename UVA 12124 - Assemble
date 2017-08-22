@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define f first
+#define s second
+#define ll long long int
+#define pii pair<int,int>
+#define psi pair<string,pii>
+
+vector<psi>v;
+int N,B;
+
+int BS(){
+    int lo=0;
+    int hi=1000000000;
+    int mid;
+    for(int i=1;i<=200;i++){
+        mid=(lo+hi)/2;
+
+        ll sum=0;
+        int MIN=INT_MAX;
+        if(v[0].s.s>=mid) MIN=min(MIN,v[0].s.f);
+        for(int i=1;i<v.size();i++){
+            if(v[i].f!=v[i-1].f) {sum+=MIN; MIN=INT_MAX;}
+            if(v[i].s.s>=mid) MIN=min(MIN,v[i].s.f);
+        }
+        sum+=MIN;
+
+        if(sum<=B) lo=mid;
+        else hi=mid;
+    }
+    return lo;
+}
+
+int main(){
+    int t;
+    string Type,Name;
+    int Price,Quality;
+
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d %d",&N,&B);
+        v.clear();
+        for(int i=1;i<=N;i++){
+            cin>>Type>>Name;
+            scanf("%d %d",&Price,&Quality);
+            v.push_back(make_pair(Type,make_pair(Price,Quality)));
+        }
+        sort(v.begin(),v.end());
+        printf("%d\n",BS());
+    }
+}
