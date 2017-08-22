@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define pii pair<int,int>
+#define MAX 1005
+
+vector<int>adj[MAX];
+int par[MAX];
+int dist[MAX];
+bool vis[MAX];
+priority_queue<pii>pq;
+int N,s,k,a,b;
+
+void dfs(int u){
+    if(dist[u]>k && adj[u].size()==1) pq.push(make_pair(dist[u],u));
+    for(int i=0;i<adj[u].size();i++){
+        int v=adj[u][i];
+        if(par[u]==v) continue;
+        par[v]=u;
+        dist[v]=dist[u]+1;
+        dfs(v);
+    }
+}
+
+void go(int u, int p,int dist){
+    if(dist>k) return;
+
+    vis[u]=1;
+    for(int i=0;i<adj[u].size();i++){
+        int v=adj[u][i];
+        if(v==p) continue;
+        else go(v,u,dist+1);
+    }
+}
+
+int main(){
+    int t;
+    scanf("%d",&t);
+    //freopen("a.txt","w",stdout);
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d %d %d",&N,&s,&k);
+        for(int i=1;i<=N;i++) adj[i].clear();
+        memset(dist,0,sizeof(dist));
+        memset(par,0,sizeof(par));
+
+        for(int i=1;i<N;i++){
+            scanf("%d %d",&a,&b);
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+        dfs(s);
+
+        int ans=0;
+        int u;
+
+        memset(vis,0,sizeof(vis));
+        while(!pq.empty()){
+            u=pq.top().second;
+            pq.pop();
+            if(vis[u]==1) continue;
+            ans++;
+
+            for(int i=1;i<=k;i++) u=par[u];
+            go(u,0,0);
+        }
+        printf("%d\n",ans);
+    }
+}
