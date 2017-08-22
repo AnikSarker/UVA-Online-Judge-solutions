@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 10005
+#define PI acos(-1)
+
+double A[MAX];
+int N,F;
+
+double BS(){
+    double lo=0;
+    double hi=PI*MAX*MAX;
+    double mid;
+    for(int i=1;i<=200;i++){
+        mid=(lo+hi)/2;
+        int cnt=0;
+        for(int i=1;i<=N;i++) cnt+=floor(PI*A[i]*A[i]/mid);
+        if(cnt>=F+1) lo=mid;
+        else hi=mid;
+    }
+    return lo;
+}
+
+int main(){
+    int t;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d %d",&N,&F);
+
+        for(int i=1;i<=N;i++) scanf("%lf",&A[i]);
+        printf("%lf\n",BS());
+    }
+}
