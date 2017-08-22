@@ -1,0 +1,7 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int N;
+    while(scanf("%d",&N)==1) {printf("%0.0lf\n",ceil(log2(N+1)));}
+}
