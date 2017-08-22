@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+using namespace std;
+string s[15];
+int n;
+
+bool check(char p,int i,int j){
+    return !(i-1>=0 && s[i-1][j]==p)
+    && !(j-1>=0 && s[i][j-1]==p)
+    && !(i<n-1 && s[i+1][j]==p)
+    && !(j<n-1 && s[i][j+1]==p);
+}
+
+int main(){
+    int t;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d",&n);
+        for(int i=0;i<n;i++) cin>>s[i];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(s[i][j]=='.'){
+                    if(check('A',i,j)) s[i][j]='A';
+                    else if(check('B',i,j)) s[i][j]='B';
+                    else if(check('C',i,j)) s[i][j]='C';
+                    else if(check('D',i,j)) s[i][j]='D';
+                    else s[i][j]='E';
+                }
+            }
+        }
+        printf("Case %d:\n",cs);
+        for(int i=0;i<n;i++) cout<<s[i]<<endl;
+    }
+
+}
