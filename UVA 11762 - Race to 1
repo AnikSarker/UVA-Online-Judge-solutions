@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 1000005
+#define ll long long int
+
+bool Comp[MAX];
+int Prime[MAX];
+vector<int>Div[MAX];
+double ans[MAX];
+
+void Sieve(){
+    for(int i=2;i<MAX;i++){
+        if(Comp[i]) Prime[i]=Prime[i-1];
+        else{
+            Prime[i]=1+Prime[i-1];
+            for(int j=2*i;j<MAX;j+=i){
+                Comp[j]=1;
+                Div[j].push_back(i);
+            }
+        }
+    }
+
+    for(int i=2;i<MAX;i++){
+        for(int j=0;j<Div[i].size();j++) ans[i]+=ans[i/Div[i][j]];
+        ans[i]+=Prime[i];
+        ans[i]=ans[i]/(Div[i].size()+1-Comp[i]);
+    }
+}
+
+int main(){
+    Sieve();
+    int t,N;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d",&N);
+        printf("Case %d: %.10lf\n",cs,ans[N]);
+    }
+
+}
