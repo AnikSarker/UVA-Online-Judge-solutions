@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 205
+
+string s;
+int Grundy[MAX];
+bool vis[MAX];
+vector<int>ANS;
+vector<int>INTERVAL;
+
+int SG(int Len){
+    if(Len<=0) return 0;
+    if(vis[Len]) return Grundy[Len];
+    vis[Len]=1;
+
+    bool ok[MAX];
+    memset(ok,0,sizeof(ok));
+    for(int i=1;i<=Len;i++){
+        int L=SG(i-1-2);
+        int R=SG(Len-i-2);
+        ok[L^R]=1;
+    }
+    for(int i=0;i<MAX;i++)
+        if(!ok[i])  return Grundy[Len]=i;
+}
+
+bool solve(int pos){
+    s[pos]='X';
+    for(int i=0;i<s.size()-2;i++) if(s[i]=='X' && s[i+1]=='X' && s[i+2]=='X') {s[pos]='.'; return 1;}
+    for(int i=0;i<s.size()-1;i++) if(s[i]=='X' && s[i+1]=='X') {s[pos]='.'; return 0;}
+    for(int i=0;i<s.size()-2;i++) if(s[i]=='X' && s[i+2]=='X') {s[pos]='.'; return 0;}
+
+    INTERVAL.clear();
+    int now=0;
+    for(int i=0;i<s.size();i++){
+        if(s[i]=='.') now++;
+        else {INTERVAL.push_back(now); now=0;}
+    }
+    INTERVAL.push_back(now);
+    INTERVAL[0]+=2;
+    INTERVAL[INTERVAL.size()-1]+=2;
+
+    int XOR=0;
+    for(int i=0;i<INTERVAL.size();i++) if(INTERVAL[i]-4>=0) XOR^=Grundy[INTERVAL[i]-4];
+    s[pos]='.';
+    return XOR==0;
+}
+
+int main(){
+    int t;
+    for(int i=1;i<MAX;i++) SG(i);
+    scanf("%d",&t);
+    for(int cs=1;cs<=t;cs++){
+        cin>>s;
+        ANS.clear();
+
+        for(int i=0;i<s.size();i++){
+            if(s[i]=='X') continue;
+            if(solve(i)) ANS.push_back(i+1);
+        }
+
+        if(ANS.size()==0) printf("LOSING\n");
+        else{
+            printf("WINNING\n");
+
+            printf("%d",ANS[0]);
+            for(int i=1;i<ANS.size();i++) printf(" %d",ANS[i]);
+        }
+        printf("\n");
+    }
+}
