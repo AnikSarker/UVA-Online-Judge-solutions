@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+using namespace std;
+deque<char>dq;
+
+int main(){
+    string s;
+    char p;
+    bool state=0;
+
+    while(cin>>s){
+        string now="";
+        for(int i=0;i<s.size();i++){
+            if(s[i]==']'){
+                if(state==1) for(int j=now.size()-1;j>=0;j--) dq.push_front(now[j]);
+                else for(int j=0;j<now.size();j++) dq.push_back(now[j]);
+
+                now="";
+                state=0;
+            }
+            else if(s[i]=='['){
+                if(state==1) for(int j=now.size()-1;j>=0;j--) dq.push_front(now[j]);
+                else for(int j=0;j<now.size();j++) dq.push_back(now[j]);
+
+                now="";
+                state=1;
+            }
+            else{
+                now+=s[i];
+            }
+        }
+
+        if(state==1) for(int j=now.size()-1;j>=0;j--) dq.push_front(now[j]);
+        else for(int j=0;j<now.size();j++) dq.push_back(now[j]);
+
+        now="";
+
+        char p;
+        while(!dq.empty()){
+            printf("%c",dq.front());
+            dq.pop_front();
+        }
+        printf("\n");
+    }
+}
