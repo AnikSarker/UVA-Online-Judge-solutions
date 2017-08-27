@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 1005
+#define ll long long int
+
+ll dp[MAX][MAX][2][2];
+bool vis[MAX][MAX][2][2];
+
+ll solve(int R,int O,bool St,bool Lst){
+    if(R<0 || O<0) return 0;
+    if(O==(bool)!R && St==!R && Lst==!R) return 1;
+
+    if(vis[R][O][St][Lst]==1) return dp[R][O][St][Lst];
+    vis[R][O][St][Lst]=1;
+
+    if(Lst==0) return dp[R][O][St][Lst]=solve(R-1,O,St,0)+solve(R-1,O,St,1);
+    else return dp[R][O][St][Lst]=solve(R,O-1,St,0);
+}
+
+int main(){
+    int N;
+    int cs=0;
+    while(scanf("%d",&N)==1){
+        if(N==0) break;
+        if(N%2==1 || N<4) {printf("Case %d: 0\n",++cs); continue;}
+
+        int R=(N+4)/2;
+        int O=(N-4)/2;
+        printf("Case %d: %lld\n",++cs,solve(R,O,0,0)+solve(R,O,0,1)+solve(R,O,1,0));
+    }
+}
