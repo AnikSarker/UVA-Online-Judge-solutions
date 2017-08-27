@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 55
+#define ll long long int
+ll Pow[MAX];
+
+int gcd(int a,int b){
+    if(a%b==0) return b;
+    return gcd(b,a%b);
+}
+
+int main(){
+    int N,t,G;
+    while(scanf("%d %d",&N,&t)==2){
+        ll ans=0,ans2=0;
+        Pow[0]=1;
+        for(int i=1;i<=N;i++){
+            Pow[i]=Pow[i-1]*t;
+            G=gcd(i,N);
+            ans+=Pow[G];
+        }
+
+        if(N%2==1) ans2=N*Pow[N/2+1];
+        else ans2=(N/2)*Pow[N/2+1]+(N/2)*Pow[N/2];
+
+        printf("%lld %lld\n",ans/N,(ans+ans2)/(2*N));
+    }
+}
