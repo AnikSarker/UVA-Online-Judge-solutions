@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 1005
+vector<int>Cow[MAX];
+bool Dead[MAX];
+int gcd(int a,int b) {return a%b==0 ? b: gcd(b,a%b);}
+int lcm(int a,int b) {return a*b/gcd(a,b);}
+
+
+int main(){
+    int t,p,x;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        int n;
+        int L=1;
+        scanf("%d",&n);
+        memset(Dead,0,sizeof(Dead));
+        for(int i=1;i<=n;i++) Cow[i].clear();
+
+        for(int i=1;i<=n;i++){
+            scanf("%d",&p);
+            for(int j=1;j<=p;j++) {scanf("%d",&x); Cow[i].push_back(x);}
+            L=lcm(L,p);
+        }
+
+        int Last=0;
+        int round=0;
+        int Left=n;
+        while(1){
+            bool FOUND=0;
+            for(int i=0;i<L;i++){
+                int Min=INT_MAX;
+                int Count=0;
+                int MIndx=-1;
+                for(int j=1;j<=n;j++){
+                    if(Dead[j]) continue;
+                    int val=Cow[j][i%Cow[j].size()];
+                    if(val<Min) {Min=val; Count=1; MIndx=j;}
+                    else if(val==Min) Count++;
+                }
+
+                if(Count>1) continue;
+                else {Dead[MIndx]=1; Left--; FOUND=1; Last=round*L+i+1;}
+            }
+            if(!FOUND) break;
+            round++;
+        }
+        printf("%d %d\n",Left,Last);
+    }
+}
