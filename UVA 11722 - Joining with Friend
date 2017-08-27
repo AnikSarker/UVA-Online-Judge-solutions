@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+int t1,t2,s1,s2,w;
+double area,Inside;
+
+double solve(int Type){
+    int d=w*Type;
+    if(s1+d>t2) return area;
+    if(t1-d>s2) return 0;
+    if(s1+d>=t1){
+        if(s2+d>=t2) return area-0.5*(t2-d-s1)*(t2-d-s1);
+        else return area-0.5*((t2-d-s1)+(t2-d-s2))*(s2-s1);
+    }
+    else{
+        if(s2+d>=t2) return 0.5*((s2+d-t1)+(s2+d-t2))*(t2-t1);
+        else return 0.5*(s2+d-t1)*(s2+d-t1);
+    }
+}
+
+int main(){
+    int t;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d %d %d %d %d",&t1,&t2,&s1,&s2,&w);
+        area=(t2-t1)*(s2-s1);
+        Inside=solve(1)-solve(-1);
+        printf("Case #%d: %.10lf\n",cs,Inside/area);
+    }
+}
