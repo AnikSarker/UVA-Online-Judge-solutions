@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 10005
+int a[MAX];
+int b[MAX];
+int c[MAX];
+int N;
+
+double solve(double x){
+    double mx=INT_MIN;
+    for(int i=1;i<=N;i++) mx=max(mx,a[i]*x*x+b[i]*x+c[i]);
+    return mx;
+}
+
+double BS(){
+    double lo=0;
+    double hi=1000;
+    double mid1,mid2;
+
+    for(int i=1;i<=200;i++){
+        mid1=(2*lo+hi)/3;
+        mid2=(lo+2*hi)/3;
+
+        if(solve(mid1)>solve(mid2)) lo=mid1;
+        else hi=mid2;
+    }
+    return solve(lo);
+}
+
+int main(){
+    int t;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        scanf("%d",&N);
+        for(int i=1;i<=N;i++) scanf("%d %d %d",&a[i],&b[i],&c[i]);
+        printf("%.4lf\n",BS());
+    }
+}
