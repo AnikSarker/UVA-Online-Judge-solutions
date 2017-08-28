@@ -16,25 +16,25 @@ ll bigmod(ll n,ll r,ll MOD){
 map<ll,int>MAP;
 map<ll,int>:: iterator it;
 ll Baby_step_Giant_step(ll a,ll b,ll p){
-	MAP.clear();
-	ll m=sqrt(p);
+    MAP.clear();
+    ll m=sqrt(p);
     ll now=1;
 
-	for(int i=0;i<m;i++){
-		MAP.insert(make_pair(now,i));
+    for(int i=0; i<m; i++)    {
+        MAP.insert(make_pair(now,i));
         now=(now*a)%p;
-	}
+    }
 
-	ll POW=bigmod(a,m,p);
-	ll INV=bigmod(POW,p-2,p);
+    ll POW=bigmod(a,m,p);
+    ll INV=bigmod(POW,p-2,p);
 
     now=b;
-	for(int i=0;i<m;i++) {
-		it=MAP.find(now);
-		if(it!=MAP.end()) return i*m+it->second;
-		now=(now*INV)%p;
-	}
-	return 0;
+    for(int i=0; i<m; i++)    {
+        it=MAP.find(now);
+        if(it!=MAP.end()) return i*m+it->second;
+        now=(now*INV)%p;
+    }
+    return 0;
 }
 
 //Finding Solution Count for fixed M
@@ -58,13 +58,13 @@ ll solve(ll M){
     ll Full=(K*bigmod(K-1,M-1,mod))%mod;
     ll Inside;
 
-    for(sIt=Col.begin();sIt!=Col.end();sIt++){
+    for(sIt=Col.begin(); sIt!=Col.end(); sIt++){
         ll curC=*sIt;
         Inside=bigmod(Full,curC-lastC-1,mod);
         ans=(ans*Inside)%mod;
 
         ll lastR=0;
-        for(int i=0;i<Blocked[curC].size();i++){
+        for(int i=0; i<Blocked[curC].size(); i++){
             ll curR=Blocked[curC][i];
             Inside=val(curR-lastR-1);
             ans=(ans*Inside)%mod;
@@ -94,7 +94,7 @@ int main(){
     int t;
     scanf("%d",&t);
 
-    for(int cs=1;cs<=t;cs++){
+    for(int cs=1; cs<=t; cs++)    {
         int a,b;
         scanf("%d %d %d %d",&N,&K,&B,&R);
 
@@ -102,7 +102,7 @@ int main(){
         Blocked.clear();
 
         int M=0;
-        for(int i=1;i<=B;i++){
+        for(int i=1; i<=B; i++)        {
             scanf("%d %d",&a,&b);
             Col.insert(b);
             Blocked[b].push_back(a);
