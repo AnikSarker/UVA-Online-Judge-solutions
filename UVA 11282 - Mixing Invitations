@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+ll D[21];
+ll nCr[21][21];
+
+int main(){
+    int n,m;
+
+    D[0]=1;
+    D[1]=0;
+    D[2]=1;
+    for(int i=3;i<=20;i++) D[i]=(i-1)*(D[i-1]+D[i-2]);
+
+    for(int n=0;n<=20;n++) {nCr[n][0]=1; nCr[n][n]=1;}
+    for(int n=1;n<=20;n++){
+        for(int r=1;r<n;r++){
+            nCr[n][r]=nCr[n-1][r]+nCr[n-1][r-1];
+        }
+    }
+
+    while(scanf("%d %d",&n,&m)==2){
+        ll sum=0;
+        for(int i=0;i<=m;i++){
+            sum+=nCr[n][i]*D[n-i];
+        }
+        cout<<sum<<endl;
+    }
+}
