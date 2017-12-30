@@ -1,1 +1,38 @@
 
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 1005
+#define ll long long int
+#define INF 1e15
+
+ll C[MAX][MAX];
+ll X[MAX];
+ll W[MAX];
+ll dp[MAX][MAX];
+ll Opt[MAX][MAX];
+
+int main(){
+    int N,K;
+    while(scanf("%d %d",&N,&K)==2){
+        for(int i=1;i<=N;i++) scanf("%lld %lld",&X[i],&W[i]);
+
+        memset(C,0LL,sizeof(C));
+        for(int j=1;j<=N;j++) for(int i=j;i>=1;i--) C[i][j]=C[i+1][j]+W[i]*(X[j]-X[i]);
+        for(int i=0;i<=K;i++) for(int j=1;j<=N;j++) dp[i][j]=INF;
+
+        for(int i=1;i<=N;i++) {Opt[0][i]=1; Opt[i][N+1]=N;}
+
+        for(int i=1;i<=K;i++){
+            for(int j=N;j>=1;j--){
+                for(int k=Opt[i-1][j];k<=Opt[i][j+1];k++){
+                    if(dp[i-1][k-1]==INF) continue;
+                    if(dp[i][j]>dp[i-1][k-1]+C[k][j]){
+                        dp[i][j]=dp[i-1][k-1]+C[k][j];
+                        Opt[i][j]=k;
+                    }
+                }
+            }
+        }
+        printf("%lld\n",dp[K][N]);
+    }
+}
