@@ -1,0 +1,173 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef pair<int,int> pii;
+const double pi = 4 * atan(1);
+const double eps = 1e-6;
+
+inline int dcmp (double x) { if (fabs(x) < eps) return 0; else return x < 0 ? -1 : 1; }
+inline double getDistance (double x, double y) { return sqrt(x * x + y * y); }
+inline double torad(double deg) { return deg / 180 * pi; }
+
+struct Point {
+    double x, y;
+    Point (double x = 0, double y = 0): x(x), y(y) {}
+    void read () { scanf("%lf%lf", &x, &y); }
+    void write () { printf("%lf %lf", x, y); }
+
+    bool operator == (const Point& u) const { return dcmp(x - u.x) == 0 && dcmp(y - u.y) == 0; }
+    bool operator != (const Point& u) const { return !(*this == u); }
+    bool operator < (const Point& u) const { return dcmp(x - u.x) < 0 || (dcmp(x-u.x)==0 && dcmp(y-u.y) < 0); }
+    bool operator > (const Point& u) const { return u < *this; }
+    bool operator <= (const Point& u) const { return *this < u || *this == u; }
+    bool operator >= (const Point& u) const { return *this > u || *this == u; }
+    Point operator + (const Point& u) { return Point(x + u.x, y + u.y); }
+    Point operator - (const Point& u) { return Point(x - u.x, y - u.y); }
+    Point operator * (const double u) { return Point(x * u, y * u); }
+    Point operator / (const double u) { return Point(x / u, y / u); }
+    double operator * (const Point& u) { return x*u.y - y*u.x; }
+};
+typedef Point Vector;
+typedef vector<Point> Polygon;
+
+struct Line {
+    double a, b, c;
+    Line (double a = 0, double b = 0, double c = 0): a(a), b(b), c(c) {}
+};
+
+struct DirLine {
+    Point p;
+    Vector v;
+    double ang;
+    DirLine () {}
+    DirLine (Point p, Vector v): p(p), v(v) { ang = atan2(v.y, v.x); }
+    bool operator < (const DirLine& u) const { return ang < u.ang; }
+};
+
+struct Circle {
+    Point o;
+    double r;
+    Circle () {}
+    Circle (Point o, double r = 0): o(o), r(r) {}
+    void read () { o.read(), scanf("%lf", &r); }
+    Point point(double rad) { return Point(o.x + cos(rad)*r, o.y + sin(rad)*r); }
+    double getArea (double rad) { return rad * r * r / 2; }
+};
+
+
+namespace Punctual {
+    double getDistance (Point a, Point b) { double x=a.x-b.x, y=a.y-b.y; return sqrt(x*x + y*y); }
+};
+
+
+namespace Vectorial {
+    double getDot (Vector a, Vector b) { return a.x * b.x + a.y * b.y; }
+    double getCross (Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
+    double getLength (Vector a) { return sqrt(getDot(a, a)); }
+    double getPLength (Vector a) { return getDot(a, a); }
+    double getAngle (Vector u) { return atan2(u.y, u.x); }
+    double getAngle (Vector a, Vector b) { return acos(getDot(a, b) / getLength(a) / getLength(b)); }
+    Vector rotate (Vector a, double rad) { return Vector(a.x*cos(rad)-a.y*sin(rad), a.x*sin(rad)+a.y*cos(rad)); }
+    Vector getNormal (Vector a) { double l = getLength(a); return Vector(-a.y/l, a.x/l); }
+};
+
+namespace ComplexVector {
+    typedef complex<double> Point;
+    typedef Point Vector;
+
+    double getDot(Vector a, Vector b) { return real(conj(a)*b); }
+    double getCross(Vector a, Vector b) { return imag(conj(a)*b); }
+    Vector rotate(Vector a, double rad) { return a*exp(Point(0, rad)); }
+};
+
+namespace Linear {
+    using namespace Vectorial;
+
+    Line getLine (double x1, double y1, double x2, double y2) { return Line(y2-y1, x1-x2, y1*x2-x1*y2); }
+    Line getLine (double a, double b, Point u) { return Line(a, -b, u.y * b - u.x * a); }
+
+    bool getIntersection (Line p, Line q, Point& o) {
+        if (fabs(p.a * q.b - q.a * p.b) < eps)
+            return false;
+        o.x = (q.c * p.b - p.c * q.b) / (p.a * q.b - q.a * p.b);
+        o.y = (q.c * p.a - p.c * q.a) / (p.b * q.a - q.b * p.a);
+        return true;
+    }
+
+    bool getIntersection (Point p, Vector v, Point q, Vector w, Point& o) {
+        if (dcmp(getCross(v, w)) == 0) return false;
+        Vector u = p - q;
+        double k = getCross(w, u) / getCross(v, w);
+        o = p + v * k;
+        return true;
+    }
+
+    double getDistanceToLine (Point p, Point a, Point b) { return fabs(getCross(b-a, p-a) / getLength(b-a)); }
+    double getDistanceToSegment (Point p, Point a, Point b) {
+        //if (a == b) return getLength(p-a);
+        Vector v1 = b - a, v2 = p - a, v3 = p - b;
+        //if (dcmp(getDot(v1, v2)) < 0) return getLength(v2);
+       // else if (dcmp(getDot(v1, v3)) > 0) return getLength(v3);
+        //else
+        return fabs(getCross(v1, v2) / getLength(v1));
+    }
+
+    Point getPointToLine (Point p, Point a, Point b) { Vector v = b-a; return a+v*(getDot(v, p-a) / getDot(v,v)); }
+
+    bool haveIntersection (Point a1, Point a2, Point b1, Point b2) {
+        double c1=getCross(a2-a1, b1-a1), c2=getCross(a2-a1, b2-a1), c3=getCross(b2-b1, a1-b1), c4=getCross(b2-b1,a2-b1);
+        return dcmp(c1)*dcmp(c2) < 0 && dcmp(c3)*dcmp(c4) < 0;
+    }
+
+    bool onSegment (Point p, Point a, Point b) { return dcmp(getCross(a-p, b-p)) == 0 && dcmp(getDot(a-p, b-p)) < 0; }
+    bool onLeft(DirLine l, Point p) { return dcmp(l.v * (p-l.p)) >= 0; }
+}
+
+double cross(const Point &O, const Point &A, const Point &B){
+	return (A.x-O.x)*(B.y-O.y)-(A.y-O.y)*(B.x-O.x);
+}
+
+vector<Point>P;
+Point H[1005];
+int k;
+
+void convex_hull(){
+	int n=P.size();
+	k=0;
+
+	sort(P.begin(),P.end());
+	for (int i=0;i<n; ++i) {
+		while(k >= 2 && cross(H[k-2],H[k-1],P[i])<=0) k--;
+		H[k++]=P[i];
+	}
+
+	for(int i=n-2,t=k+1;i>=0;i--){
+		while (k>= t && cross(H[k-2],H[k-1],P[i])<=0) k--;
+		H[k++]=P[i];
+	}
+}
+
+int main(){
+    using namespace Linear;
+
+    int n;
+    int cs=0;
+
+    while(scanf("%d",&n)==1){
+        if(n==0) break;
+
+        P.clear();
+        double x,y;
+
+        for(int i=0;i<n;i++){scanf("%lf %lf",&x,&y); P.push_back(Point(x,y));}
+        convex_hull();
+
+        double MIN=1e12;
+        for(int i=0;i<k;i++){
+            double mx=0;
+            for(int j=0;j<k;j++) mx=max(mx,getDistanceToSegment(H[j],H[i],H[(i+1)%(k-1)]));
+            MIN=min(MIN,mx);
+        }
+        printf("Case %d: %.2lf\n",++cs,MIN);
+    }
+}
