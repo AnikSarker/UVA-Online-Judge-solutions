@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 20
+
+int Set(int N,int pos){return N=N | (1<<pos);}
+int reset(int N,int pos){return N= N & ~(1<<pos);}
+bool check(int N,int pos){return (bool)(N & (1<<pos));}
+
+bool dp[4][1<<MAX];
+int vis[4][1<<MAX];
+int len[MAX];
+int M,SIDE;
+int cs;
+
+bool solve(int Count,int mask){
+    if(Count==4) return 1;
+
+    int sum=0;
+    for(int i=0;i<M;i++) if(check(mask,i)) sum+=len[i];
+    int curr=sum-Count*SIDE;
+
+    if(curr==SIDE) return solve(Count+1,mask);
+    if(vis[Count][mask]==cs) return dp[Count][mask];
+    vis[Count][mask]=cs;
+
+    bool ret=0;
+    for(int i=0;i<M;i++){
+        if(check(mask,i)) continue;
+        if(curr+len[i]>SIDE) continue;
+
+        ret=ret|solve(Count,Set(mask,i));
+        if(ret) break;
+    }
+
+    return dp[Count][mask]=ret;
+}
+
+int main(){
+    int t;
+    scanf("%d",&t);
+    for(cs=1;cs<=t;cs++){
+        scanf("%d",&M);
+
+        int SUM=0;
+        for(int i=0;i<M;i++) {scanf("%d",&len[i]); SUM+=len[i];}
+
+        if(SUM%4==0){
+            SIDE=SUM/4;
+            bool ret=solve(0,0);
+            if(ret) printf("yes\n");
+            else printf("no\n");
+        }
+        else printf("no\n");
+    }
+}
