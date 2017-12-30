@@ -1,0 +1,102 @@
+#include<bits/stdc++.h>
+#define MAX 10005
+#define ll long long int
+using namespace std;
+
+struct EDGE{
+    int dest; ll cost;
+    EDGE(int b,ll c){dest=b;cost=c;}
+};
+
+struct NODE{
+    int ID; ll Dist;
+    NODE(int u,int d){ID=u;Dist=d;}
+    bool operator <(const NODE& other) const{
+        return Dist>other.Dist;    //This is how pq works - reverse
+    }
+};
+
+vector<EDGE>adj[MAX];
+vector<EDGE>rev[MAX];
+priority_queue<NODE>pq;
+ll dist1[MAX];
+ll dist2[MAX];
+int n;
+
+void djkstra1(ll u){
+    while(!pq.empty()) pq.pop();
+    for(int i=1;i<=n;i++) dist1[i]=INT_MAX;
+
+    dist1[u]=0;
+    pq.push(NODE(u,0));
+    while(!pq.empty()){
+        NODE now=pq.top();
+        int v=now.ID;
+        pq.pop();
+
+        for(int i=0;i<adj[v].size();i++){
+            EDGE w=adj[v][i];
+            if(dist1[w.dest]>dist1[v]+w.cost){
+                dist1[w.dest]=dist1[v]+w.cost;
+                pq.push(NODE(w.dest,dist1[w.dest]));
+            }
+        }
+    }
+}
+
+void djkstra2(ll u){
+    while(!pq.empty()) pq.pop();
+    for(int i=1;i<=n;i++) dist2[i]=INT_MAX;
+
+    dist2[u]=0;
+    pq.push(NODE(u,0));
+    while(!pq.empty()){
+        NODE now=pq.top();
+        int v=now.ID;
+        pq.pop();
+
+        for(int i=0;i<rev[v].size();i++){
+            EDGE w=rev[v][i];
+            if(dist2[w.dest]>dist2[v]+w.cost){
+                dist2[w.dest]=dist2[v]+w.cost;
+                pq.push(NODE(w.dest,dist2[w.dest]));
+            }
+        }
+    }
+}
+
+int main(){
+   int t;
+   scanf("%d",&t);
+
+   for(int cs=1;cs<=t;cs++){
+      int M,s,t,p;
+      scanf("%d %d %d %d %d",&n,&M,&s,&t,&p);
+
+      for(int i=1;i<=n;i++) {adj[i].clear(); rev[i].clear();}
+
+      for(int i=1;i<=M;i++){
+         int a,b,c;
+         scanf("%d %d %d",&a,&b,&c);
+         adj[a].push_back(EDGE(b,c));
+         rev[b].push_back(EDGE(a,c));
+      }
+
+      djkstra1(s);
+      djkstra2(t);
+
+      ll Cost;
+      ll Max=-1;
+      for(int i=1;i<=n;i++){
+         for(int j=0;j<adj[i].size();j++){
+            int u=i;
+            int v=adj[i][j].dest;
+
+            Cost=dist1[u]+dist2[v]+adj[i][j].cost;
+            if(Cost<=p) Max=max(Max,adj[i][j].cost);
+         }
+      }
+
+      printf("%lld\n",Max);
+   }
+}
