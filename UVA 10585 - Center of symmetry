@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define MAX 10005
+#define ll long long int
+#define pii pair<int,int>
+map<pii,bool>Map;
+int x[MAX];
+int y[MAX];
+
+int main(){
+    int t;
+    scanf("%d",&t);
+
+    for(int cs=1;cs<=t;cs++){
+        int n;
+        scanf("%d",&n);
+
+        Map.clear();
+        ll SumX=0;
+        ll SumY=0;
+
+        for(int i=1;i<=n;i++){
+            scanf("%d %d",&x[i],&y[i]);
+            Map[make_pair(x[i],y[i])]=1;
+            SumX+=x[i]; SumY+=y[i];
+        }
+
+        bool ok=true;
+        if((2*SumX)%n || (2*SumY)%n) ok=false;
+        for(int i=1;i<=n;i++){
+            int u=(2*SumX/n)-x[i];
+            int v=(2*SumY/n)-y[i];
+
+            if(!Map.count(make_pair(u,v))) ok=false;
+        }
+        if(ok) printf("yes\n");
+        else printf("no\n");
+    }
+}
