@@ -1,0 +1,11 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define PI acos(-1)
+
+int main(){
+    double d,v;
+    while(scanf("%lf %lf",&d,&v)==2){
+        if(d==0 && v==0) break;
+        printf("%.3lf\n",pow(d*d*d-6*v/PI,1/3.0));
+    }
+}
