@@ -1,0 +1,76 @@
+#include <bits/stdc++.h>
+#define EPS 1e-6
+#define MAX 10005
+#define PI acos(-1)
+using namespace std;
+
+inline int dcmp (double x) { if (fabs(x) < EPS) return 0; else return x < 0 ? -1 : 1; }
+
+struct Point{
+    double x;
+    double y;
+    double z;
+    Point(){}
+    Point(double a,double b,double c){x=a;y=b;z=c;}
+
+    bool operator == (const Point& u) const { return dcmp(x - u.x) == 0 && dcmp(y - u.y) == 0 && dcmp(z - u.z) == 0; }
+    bool operator != (const Point& u) const { return !(*this == u); }
+    bool operator < (const Point& u) const { return dcmp(x - u.x) < 0 || (dcmp(x-u.x)==0 && dcmp(y-u.y) < 0) || (dcmp(x-u.x)==0 && dcmp(y-u.y)==0 && dcmp(z-u.z)<0); }
+    bool operator > (const Point& u) const { return u < *this; }
+    bool operator <= (const Point& u) const { return *this < u || *this == u; }
+    bool operator >= (const Point& u) const { return *this > u || *this == u; }
+    Point operator + (const Point& u) { return Point(x + u.x, y + u.y,z+u.z); }
+    Point operator - (const Point& u) { return Point(x - u.x, y - u.y,z-u.z); }
+    Point operator * (const double u) { return Point(x * u, y * u, z * u); }
+    Point operator / (const double u) { return Point(x / u, y / u, z / u); }
+};
+
+Point P[MAX];
+int n;
+double MaxZ;
+
+double solve(double h){
+    double r=0;
+    double x,y,z,nowR,dist;
+    for(int i=1;i<=n;i++){
+        x=P[i].x;
+        y=P[i].y;
+        z=P[i].z;
+        dist=sqrt(x*x+y*y);
+        nowR=(h*dist)/(h-z);
+        r=max(r,nowR);
+    }
+    return r*r*h;
+}
+
+pair<double,double>TS(){
+    double lo=MaxZ;
+    double hi=100000;
+    double mid1,mid2,val1,val2,vol=0;
+
+    int cnt=0;
+    for(int i=1;i<=100;i++){
+        mid1=(lo+2*hi)/3;
+        mid2=(2*lo+hi)/3;
+
+        val1=solve(mid1);
+        val2=solve(mid2);
+
+        if(val2<val1) hi=mid1;
+        else lo=mid2;
+    }
+
+    double r=sqrt(val1/mid1);
+    return make_pair(mid1,r);
+}
+
+
+int main(){
+    while(scanf("%d",&n)==1){
+        MaxZ=0;
+        double x,y,z;
+        for(int i=1;i<=n;i++) {scanf("%lf %lf %lf",&x,&y,&z); MaxZ=max(MaxZ,z); P[i]=Point(x,y,z);}
+        pair<double,double>now=TS();
+        printf("%0.3lf %0.3lf\n",now.first,now.second);
+    }
+}
