@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+#define EPS 1e-6
+#define MAX 10005
+#define PI acos(-1)
+using namespace std;
+
+int main(){
+    double r,h,d1,A1,d2,A2;
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+
+    while(cin>>r>>h>>d1>>A1>>d2>>A2){
+        double ang=fabs(A1-A2);
+        if(ang<0) ang+=360;
+        if(ang>180) ang=360-ang;
+        ang=ang*PI/180.0;
+
+        double ANG=atan2(r,h);
+
+        ang=ang*sin(ANG);
+
+        double d=d1*d1+d2*d2-2*d1*d2*cos(ang);
+        printf("%.2lf\n",sqrt(d));
+    }
+}
