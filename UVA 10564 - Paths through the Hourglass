@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define MAX 50
+
+ll N,S;
+ll A[MAX][MAX];
+ll vis[MAX][MAX][1005];
+ll dp[MAX][MAX][1005];
+ll cs;
+char child[MAX][MAX][1005];
+ll Next[MAX][MAX][1005];
+
+ll solve(ll row,ll col,ll sum){
+    if(col<0) return 0;
+    if(sum>S) return 0;
+    if(A[row][col]==-1) return 0;
+    if(row==2*N-1) {if(A[row][col]+sum==S) return 1LL; else return 0LL;}
+
+    if(vis[row][col][sum]==cs) return dp[row][col][sum];
+    vis[row][col][sum]=cs;
+
+    ll ret1=0,ret2=0;
+    if(row<N){
+        ret1=solve(row+1,col-1,sum+A[row][col]);
+        ret2=solve(row+1,col,sum+A[row][col]);
+
+        if(ret1) {child[row][col][sum]='L'; Next[row][col][sum]=col-1;}
+        else {child[row][col][sum]='R'; Next[row][col][sum]=col;}
+
+    }
+    else{
+        ret1=solve(row+1,col,sum+A[row][col]);
+        ret2=solve(row+1,col+1,sum+A[row][col]);
+
+        if(ret1) {child[row][col][sum]='L'; Next[row][col][sum]=col;}
+        else {child[row][col][sum]='R'; Next[row][col][sum]=col+1;}
+    }
+
+    return dp[row][col][sum]=ret1+ret2;
+}
+
+void Print(ll row,ll col,ll sum){
+    if(row==2*N-1) return;
+    printf("%c",child[row][col][sum]);
+    Print(row+1,Next[row][col][sum],sum+A[row][col]);
+}
+
+int main(){
+    cs=1;
+
+    while(scanf("%lld %lld",&N,&S)){
+        if(N==0 && S==0) break;
+        memset(A,-1,sizeof (A));
+
+        for(ll i=1;i<N;i++) for(ll j=1;j<=N+1-i;j++) scanf("%lld",&A[i][j]);
+        for(ll i=1;i<=N;i++) for(ll j=1;j<=i;j++) scanf("%lld",&A[N-1+i][j]);
+
+        ll sum=0;
+        for(ll i=1;i<=N;i++) sum+=solve(1,i,0);
+        printf("%lld\n",sum);
+
+        if(sum){
+            ll MIN=-1;
+            for(ll i=1;i<=N;i++) if(solve(1,i,0)) {MIN=i; break;}
+            printf("%lld ",MIN-1);
+            Print(1,MIN,0);
+        }
+        printf("\n");
+
+        cs++;
+    }
+}
