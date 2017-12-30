@@ -1,0 +1,107 @@
+#include <bits/stdc++.h>
+#define EPS 1e-6
+#define MAX 10005
+#define PI acos(-1)
+using namespace std;
+using namespace std;
+typedef pair<int,int> pii;
+const double pi = 4 * atan(1);
+const double eps = 1e-6;
+
+inline int dcmp (double x) { if (fabs(x) < eps) return 0; else return x < 0 ? -1 : 1; }
+inline double getDistance (double x, double y) { return sqrt(x * x + y * y); }
+inline double torad(double deg) { return deg / 180 * pi; }
+
+struct Point {
+    double x, y;
+    Point (double x = 0, double y = 0): x(x), y(y) {}
+    void read () { scanf("%lf%lf", &x, &y); }
+    void write () { printf("%lf %lf", x, y); }
+
+    bool operator == (const Point& u) const { return dcmp(x - u.x) == 0 && dcmp(y - u.y) == 0; }
+    Point operator + (const Point& u) { return Point(x + u.x, y + u.y); }
+    Point operator - (const Point& u) { return Point(x - u.x, y - u.y); }
+    Point operator * (const double u) { return Point(x * u, y * u); }
+    Point operator / (const double u) { return Point(x / u, y / u); }
+};
+typedef Point Vector;
+
+namespace Vectorial {
+    double getDot (Vector a, Vector b) { return a.x * b.x + a.y * b.y; }
+    double getCross (Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
+    double getLength (Vector a) { return sqrt(getDot(a, a)); }
+};
+
+
+namespace Linear {
+    using namespace Vectorial;
+
+    bool getIntersection (Point p, Vector v, Point q, Vector w, Point& o) {
+        if (dcmp(getCross(v, w)) == 0) return false;
+        Vector u = p - q;
+        double k = getCross(w, u) / getCross(v, w);
+        o = p + v * k;
+        return true;
+    }
+
+    double getDistanceToLine (Point p, Point a, Point b) { return fabs(getCross(b-a, p-a) / getLength(b-a)); }
+    double getDistanceToSegment (Point p, Point a, Point b) {
+        if (a == b) return getLength(p-a);
+        Vector v1 = b - a, v2 = p - a, v3 = p - b;
+        if (dcmp(getDot(v1, v2)) < 0) return getLength(v2);
+        else if (dcmp(getDot(v1, v3)) > 0) return getLength(v3);
+        else return fabs(getCross(v1, v2) / getLength(v1));
+    }
+    bool onSegment (Point p, Point a, Point b) { return dcmp(getCross(a-p, b-p)) == 0 && dcmp(getDot(a-p, b-p)) < 0; }
+}
+
+
+int main(){
+    double x1,y1,x2,y2;
+    double x3,y3,x4,y4;
+    string Type1,Type2;
+    using namespace Linear;
+
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+
+    while(cin>>x1>>y1>>x2>>y2>>Type1>>x3>>y3>>x4>>y4>>Type2){
+        if(Type2=="END") break;
+        Point p1=Point(x1,y1);
+        Point p2=Point(x2,y2);
+        Point p3=Point(x3,y3);
+        Point p4=Point(x4,y4);
+
+        if(Type1=="L" && Type2=="L"){
+            Point p;
+            bool ret=getIntersection(p1,p2-p1,p3,p4-p3,p);
+            double ans=0;
+            if(!ret) ans=getDistanceToLine(p1,p3,p4);
+            printf("%.5lf\n",ans);
+        }
+        else if(Type1=="LS" && Type2=="LS"){
+            Point p;
+
+            double ans=1e12;
+            bool ret=getIntersection(p1,p2-p1,p3,p4-p3,p);
+            if(ret && onSegment(p,p1,p2) && onSegment(p,p3,p4)) ans=0;
+            ans=min(ans,getDistanceToSegment(p1,p3,p4));
+            ans=min(ans,getDistanceToSegment(p2,p3,p4));
+            ans=min(ans,getDistanceToSegment(p3,p1,p2));
+            ans=min(ans,getDistanceToSegment(p4,p1,p2));
+            printf("%.5lf\n",ans);
+        }
+        else{
+            if(Type1=="LS") {swap(p1,p3);swap(p2,p4);}
+            Point p;
+
+            double ans=1e12;
+            bool ret=getIntersection(p1,p2-p1,p3,p4-p3,p);
+            if(ret && onSegment(p,p3,p4)) ans=0;
+            ans=min(ans,getDistanceToLine(p3,p1,p2));
+            ans=min(ans,getDistanceToLine(p4,p1,p2));
+            printf("%.5lf\n",ans);
+        }
+    }
+}
