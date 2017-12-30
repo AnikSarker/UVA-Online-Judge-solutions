@@ -1,0 +1,112 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX 1500000
+int ara[MAX];
+int tree[MAX*3];
+
+void build(int node, int lo, int hi){
+    if (lo==hi) {tree[node]=ara[lo]; return;}
+    int Left=node*2;
+    int Right=node*2+1;
+    int mid=(lo+hi)/2;
+    build(Left,lo,mid);
+    build(Right,mid+1,hi);
+    tree[node]=tree[Left]+tree[Right];
+}
+
+//lazy propagation
+int lazy[MAX*3];
+void lazyPropagation(int node,int lo,int hi){
+    if(lazy[node]!=0){
+        if(lazy[node]==1) tree[node]=(hi-lo+1);
+        else if(lazy[node]==2) tree[node]=0;
+        else if(lazy[node]==-1) tree[node]=(hi-lo+1)-tree[node];
+
+        if(lo!=hi){
+            if(lazy[node]==-1){
+                int mid=(lo+hi)/2;
+                lazyPropagation(node*2,lo,mid);
+                lazyPropagation(node*2+1,mid+1,hi);
+            }
+            lazy[node*2]=lazy[node];
+            lazy[node*2+1]=lazy[node];
+        }
+        lazy[node]=0;
+    }
+}
+
+void updateRange(int node, int lo, int hi, int i, int j, int val){
+    lazyPropagation(node,lo,hi);
+    if(lo>hi) return;
+    else if(lo>j || hi<i) return;
+
+    if(lo>=i && hi<=j){
+        lazy[node]=val;
+        lazyPropagation(node,lo,hi);
+        return;
+    }
+    int mid=(lo+hi)/2;
+    updateRange(node*2,lo,mid,i,j,val);
+    updateRange(node*2+1,mid+1,hi,i,j,val);
+    tree[node]=tree[node*2]+tree[node*2+1];
+}
+
+int queryRange(int node,int lo,int hi,int i,int j){
+    if(lo>hi) return 0;
+    else if(lo>j || hi<i) return 0;
+
+    lazyPropagation(node,lo,hi);
+    if(lo>=i && hi <= j) return tree[node];
+    int mid=(lo+hi)/2;
+    int p1=queryRange(node*2,lo,mid,i,j);
+    int p2=queryRange(node*2+1,mid+1,hi,i,j);
+    return p1+p2;
+}
+
+int main(){
+//    int n;
+//    scanf("%d",&n);
+//    for(int i=1;i<=n;i++)  scanf("%d",&ara[i]);
+//    build(1, 1, n);
+//
+//    int q,a,b;
+//    scanf("%d",&q);
+//    for(int i=0;i<q;i++){
+//        scanf("%d %d",&a,&b);
+//        printf("%d\n",query(1, 1, n, a, b));
+//    }
+    int t;
+    string s;
+    scanf("%d",&t);
+    for(int cs=1;cs<=t;cs++){
+        int m,p;
+        int COUNT=0;
+
+        scanf("%d",&m);
+        for(int i=1;i<=m;i++){
+            scanf("%d",&p);
+            cin>>s;
+            for(int j=1;j<=p;j++) for(int k=0;k<s.size();k++) ara[++COUNT]=s[k]-'0';
+        }
+
+        memset(lazy,0,sizeof(lazy));
+
+        build(1,1,COUNT);
+
+        int q;
+        scanf("%d",&q);
+        int qCount=0;
+        char cmd;
+        int a,b;
+
+        printf("Case %d:\n",cs);
+        for(int i=1;i<=q;i++){
+            scanf(" %c %d %d",&cmd,&a,&b);
+            a++; b++;
+            if(cmd=='F') updateRange(1,1,COUNT,a,b,1);
+            else if(cmd=='E') updateRange(1,1,COUNT,a,b,2);
+            else if(cmd=='I') updateRange(1,1,COUNT,a,b,-1);
+            else printf("Q%d: %d\n",++qCount,queryRange(1,1,COUNT,a,b));
+        }
+    }
+}
