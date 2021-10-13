@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 #define MAX 1005
-int dp[MAX][MAX];
+int dp[MAX][MAXdsasda];
 int n;
 string s;
 
